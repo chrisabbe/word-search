@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Word Search</title>
+
+<style>
+  :root{
+    --teal:#008080;
+    --gold:#d8c178;
+    --gold-soft:#efe4b4;
+    --bg:#f5f6f7;
+    --panel:#ffffff;
+    --ink:#1e1e1e;
+    --muted:#6b6b6b;
+    --line:#b9b9b9;
+  }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--ink);
+  }
+
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:10px;
+  }
+
+  header{
+    background:var(--teal);
+    color:white;
+    text-align:center;
+    padding:12px 8px;
+    border-bottom:3px solid #006a6a;
+  }
+  header h1{
+    margin:0;
+    font-size:22px;
+    letter-spacing:.5px;
+  }
+  header h2{
+    margin:4px 0 0;
+    font-size:15px;
+    font-weight:600;
+    opacity:.95;
+  }
+
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:12.5px;
+    font-style:italic;
+    margin:6px 0 10px;
+  }
+
+  .panel{
+    background:var(--panel);
+    border:1px solid #e2e2e2;
+    border-radius:14px;
+    padding:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.04);
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns:auto 220px;
+    gap:10px;
+    align-items:start;
+  }
+  @media (max-width:760px){
+    .layout{
+      grid-template-columns:1fr;
+    }
+  }
+
+  /* Grid */
+  .gridWrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    display:flex;
+    justify-content:center;
+  }
+
+  .grid{
+    display:grid;
+    gap:2px;
+    touch-action:none; /* allow drag selection */
+    user-select:none;
+  }
+
+  .cell{
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:17px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    position:relative;
+  }
+
+  /* Responsive squeeze for phones */
+  @media (max-width:520px){
+    .cell{ width:26px; height:26px; font-size:15px; border-radius:5px; }
+  }
+  @media (max-width:420px){
+    .cell{ width:23px; height:23px; font-size:14px; border-radius:4px; }
+  }
+
+  .cell.prefound{
+    background:var(--gold-soft);
+    border-color:#b7a25a;
+  }
+  .cell.preview{
+    background:#cfeeee;
+    border-color:#6aa;
+  }
+
+  /* Word list */
+  .words{
+    padding:8px;
+  }
+  .words h3{
+    margin:0 0 6px;
+    color:var(--teal);
+    font-size:16px;
+  }
+  .word{
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.4px;
+    padding:4px 4px;
+    border-radius:6px;
+    margin:2px 0;
+  }
+  .word.found{
+    background:var(--gold-soft);
+    text-decoration:line-through;
+    color:#444;
+  }
+
+  .controls{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    margin-top:10px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    padding:9px 14px;
+    border-radius:10px;
+    font-weight:800;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .btn.secondary{
+    background:#fff;
+    color:var(--teal);
+    border:1px solid var(--teal);
+  }
+
+  .toast{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:16px;
+    background:var(--teal);
+    color:#fff;
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:13px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s;
+    z-index:99;
+  }
+  .toast.show{ opacity:1; }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Daily Word Search</h1>
+  <h2>Morning Routine</h2>
+</header>
+<div class="wrap">
+  <div class="subtitle">Drag across letters to highlight words. Progress saves automatically.</div>
+
+  <div class="panel layout">
+    <div class="gridWrap">
+      <div id="grid" class="grid"></div>
+    </div>
+
+    <div class="words">
+      <h3>Words to Find</h3>
+      <div id="wordList"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn secondary" id="clearBtn">Clear My Answers</button>
+  </div>
+</div>
+
+<div id="toast" class="toast">Saved</div>
+
+<script>
+/* =========================
+   CONFIG
+========================= */
+const TITLE = "Daily Word Search";
+const SUBTITLE = "Morning Routine";
+const GRID_SIZE = 17; // medium default
+const WORDS = [
+  "BRUSH","TEETH","COFFEE","SHOWER","ALARM","MIRROR","TOWEL","CEREAL",
+  "TOOTHPASTE","SNOOZE","DRESS","SUNLIGHT","MAKEUP","SMOOTHIE","WAKE"
+].map(w=>w.toUpperCase());
+
+const LS_KEY = "wordsearch_morningroutine_medium_v1";
+const CLEAR_COOKIE = "ws_clear_requested_v1";
+
+/* deterministic RNG so your puzzle stays the same each load */
+let seed = 20251124;
+function rand(){
+  seed = (seed * 1664525 + 1013904223) % 4294967296;
+  return seed / 4294967296;
+}
+function choice(arr){ return arr[Math.floor(rand()*arr.length)]; }
+
+/* 8 directions */
+const DIRS = [
+  {dr:1, dc:0},{dr:-1, dc:0},{dr:0, dc:1},{dr:0, dc:-1},
+  {dr:1, dc:1},{dr:-1, dc:-1},{dr:-1, dc:1},{dr:1, dc:-1}
+];
+
+/* =========================
+   BUILD GRID
+========================= */
+let grid = Array.from({length:GRID_SIZE}, ()=>Array.from({length:GRID_SIZE}, ()=>""));
+let placements = []; // {word, r,c, dr,dc}
+function inBounds(r,c){ return r>=0 && r<GRID_SIZE && c>=0 && c<GRID_SIZE; }
+
+function canPlace(word,r,c,dr,dc){
+  for(let i=0;i<word.length;i++){
+    const rr=r+dr*i, cc=c+dc*i;
+    if(!inBounds(rr,cc)) return false;
+    const ch=grid[rr][cc];
+    if(ch!=="" && ch!==word[i]) return false;
+  }
+  return true;
+}
+
+function placeWord(word){
+  for(let tries=0; tries<1200; tries++){
+    const {dr,dc}=choice(DIRS);
+    const minR = dr<0 ? word.length-1 : 0;
+    const maxR = dr>0 ? GRID_SIZE-word.length : GRID_SIZE-1;
+    const minC = dc<0 ? word.length-1 : 0;
+    const maxC = dc>0 ? GRID_SIZE-word.length : GRID_SIZE-1;
+
+    const r = Math.floor(rand()*(maxR-minR+1))+minR;
+    const c = Math.floor(rand()*(maxC-minC+1))+minC;
+
+    if(canPlace(word,r,c,dr,dc)){
+      for(let i=0;i<word.length;i++){
+        grid[r+dr*i][c+dc*i]=word[i];
+      }
+      placements.push({word,r,c,dr,dc});
+      return true;
+    }
+  }
+  return false;
+}
+
+function generatePuzzle(){
+  // place longest first
+  const sorted=[...WORDS].sort((a,b)=>b.length-a.length);
+  sorted.forEach(w=>{
+    if(!placeWord(w)) console.warn("Could not place", w);
+  });
+
+  // fill empty with random letters
+  const alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for(let r=0;r<GRID_SIZE;r++){
+    for(let c=0;c<GRID_SIZE;c++){
+      if(grid[r][c]===""){
+        grid[r][c]=alphabet[Math.floor(rand()*alphabet.length)];
+      }
+    }
+  }
+}
+
+/* =========================
+   RENDER
+========================= */
+const gridEl=document.getElementById("grid");
+gridEl.style.gridTemplateColumns=`repeat(${GRID_SIZE}, 1fr)`;
+
+let cellEls = []; // flat list
+function renderGrid(){
+  gridEl.innerHTML="";
+  cellEls=[];
+  for(let r=0;r<GRID_SIZE;r++){
+    for(let c=0;c<GRID_SIZE;c++){
+      const d=document.createElement("div");
+      d.className="cell";
+      d.textContent=grid[r][c];
+      d.dataset.r=r;
+      d.dataset.c=c;
+      gridEl.appendChild(d);
+      cellEls.push(d);
+    }
+  }
+}
+
+const wordListEl=document.getElementById("wordList");
+let foundWords = new Set();
+let foundCells = new Set(); // "r,c"
+
+function renderWordList(){
+  wordListEl.innerHTML="";
+  WORDS.forEach(w=>{
+    const div=document.createElement("div");
+    div.className="word"+(foundWords.has(w)?" found":"");
+    div.textContent=w;
+    wordListEl.appendChild(div);
+  });
+}
+
+function applyFoundStyling(){
+  cellEls.forEach(el=>{
+    const key=el.dataset.r+","+el.dataset.c;
+    if(foundCells.has(key)) el.classList.add("prefound");
+    else el.classList.remove("prefound");
+  });
+}
+
+/* =========================
+   SELECTION LOGIC
+========================= */
+let selecting=false;
+let startCell=null;
+let previewCells=[];
+
+function cellFromEvent(e){
+  const target = e.target.closest(".cell");
+  if(!target) return null;
+  return target;
+}
+
+function clearPreview(){
+  previewCells.forEach(el=>el.classList.remove("preview"));
+  previewCells=[];
+}
+
+function lineCells(r1,c1,r2,c2){
+  const dr = Math.sign(r2-r1);
+  const dc = Math.sign(c2-c1);
+
+  // must be straight or diagonal
+  if(!((dr===0 && dc!==0) || (dc===0 && dr!==0) || (Math.abs(r2-r1)===Math.abs(c2-c1)))){
+    return [];
+  }
+
+  const cells=[];
+  let r=r1, c=c1;
+  cells.push([r,c]);
+  while(r!==r2 || c!==c2){
+    r+=dr; c+=dc;
+    if(!inBounds(r,c)) return [];
+    cells.push([r,c]);
+  }
+  return cells;
+}
+
+function previewTo(cell){
+  clearPreview();
+  if(!startCell || !cell) return;
+
+  const r1=+startCell.dataset.r, c1=+startCell.dataset.c;
+  const r2=+cell.dataset.r, c2=+cell.dataset.c;
+  const coords=lineCells(r1,c1,r2,c2);
+  if(coords.length===0) return;
+
+  previewCells = coords.map(([r,c])=>gridEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`));
+  previewCells.forEach(el=>{
+    // don't override found styling
+    if(!el.classList.contains("prefound")) el.classList.add("preview");
+  });
+}
+
+function previewWord(){
+  if(previewCells.length===0) return "";
+  return previewCells.map(el=>el.textContent).join("");
+}
+
+function commitSelection(){
+  const w = previewWord();
+  if(!w) return;
+
+  const rev = w.split("").reverse().join("");
+  const match = WORDS.find(x => x===w || x===rev);
+  if(!match) return;
+
+  if(foundWords.has(match)) return;
+
+  // mark found
+  foundWords.add(match);
+  previewCells.forEach(el=>{
+    const key=el.dataset.r+","+el.dataset.c;
+    foundCells.add(key);
+  });
+
+  renderWordList();
+  applyFoundStyling();
+  saveProgress();
+  showToast(`Found: ${match}`);
+}
+
+/* pointer events cover mouse + touch */
+gridEl.addEventListener("pointerdown",(e)=>{
+  const cell=cellFromEvent(e);
+  if(!cell) return;
+  selecting=true;
+  startCell=cell;
+  previewTo(cell);
+  gridEl.setPointerCapture(e.pointerId);
+});
+
+gridEl.addEventListener("pointermove",(e)=>{
+  if(!selecting) return;
+  const cell=cellFromEvent(e);
+  if(!cell) return;
+  previewTo(cell);
+});
+
+gridEl.addEventListener("pointerup",(e)=>{
+  if(!selecting) return;
+  selecting=false;
+  commitSelection();
+  clearPreview();
+  startCell=null;
+});
+
+/* =========================
+   SAVE / RESTORE
+========================= */
+function saveProgress(){
+  const data={
+    foundWords:[...foundWords],
+    foundCells:[...foundCells]
+  };
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+
+function restoreProgress(){
+  const raw=localStorage.getItem(LS_KEY);
+  if(!raw) return;
+  try{
+    const d=JSON.parse(raw);
+    (d.foundWords||[]).forEach(w=>foundWords.add(w));
+    (d.foundCells||[]).forEach(k=>foundCells.add(k));
+  }catch(err){}
+}
+
+/* Cookie helpers for clear */
+function setCookie(name, value, days=30){
+  const exp = new Date(Date.now()+days*864e5).toUTCString();
+  document.cookie = `${name}=${value}; expires=${exp}; path=/; SameSite=Lax`;
+}
+function getCookie(name){
+  return document.cookie.split("; ").find(r=>r.startsWith(name+"="))?.split("=")[1]||"";
+}
+function deleteCookie(name){
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+}
+
+/* Clear button */
+document.getElementById("clearBtn").addEventListener("click", ()=>{
+  // set cookie so embedded contexts can trigger a true reset
+  setCookie(CLEAR_COOKIE,"1",1);
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+});
+
+/* On load: clear if cookie says so */
+if(getCookie(CLEAR_COOKIE)==="1"){
+  localStorage.removeItem(LS_KEY);
+  deleteCookie(CLEAR_COOKIE);
+}
+
+/* =========================
+   TOAST
+========================= */
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove("show"),1800);
+}
+
+/* =========================
+   BOOT
+========================= */
+generatePuzzle();
+renderGrid();
+restoreProgress();
+renderWordList();
+applyFoundStyling();
+</script>
+
+</body>
+</html>
