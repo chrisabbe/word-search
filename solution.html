@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Word Search - Solution</title>
+
+<style>
+  :root{
+    --teal:#008080;
+    --teal-dark:#006a6a;
+    --gold:#d8c178;
+    --gold-soft:#efe4b4;
+    --bg:#f5f6f7;
+    --panel:#ffffff;
+    --ink:#1e1e1e;
+    --muted:#6b6b6b;
+    --line:#b9b9b9;
+
+    --cell:28px;
+    --gap:2px;
+  }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--ink);
+  }
+
+  header{
+    background:var(--teal);
+    color:#fff;
+    padding:14px 8px;
+    text-align:center;
+    border-bottom:3px solid var(--teal-dark);
+  }
+  header h1{
+    margin:0;
+    font-size:22px;
+    letter-spacing:.4px;
+  }
+  header h2{
+    margin:4px 0 0;
+    font-size:15px;
+    font-weight:600;
+  }
+
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:10px;
+  }
+
+  .panel{
+    background:var(--panel);
+    border:1px solid #e2e2e2;
+    border-radius:14px;
+    padding:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.04);
+  }
+
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    font-style:italic;
+    margin:8px 0 14px;
+  }
+
+  .gridOuter{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .gridScale{
+    transform-origin:top center;
+  }
+
+  .grid{
+    display:grid;
+    gap:var(--gap);
+  }
+
+  .cell{
+    width:var(--cell);
+    height:var(--cell);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:calc(var(--cell)*0.62);
+    border-radius:6px;
+    border:1px solid var(--line);
+    background:#fff;
+  }
+
+  .cell.highlight{
+    background:var(--gold-soft);
+    border-color:#b7a25a;
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Daily Word Search - Solution</h1>
+  <h2>Morning Routine</h2>
+</header>
+
+<div class="wrap">
+  <div class="subtitle">All hidden words are highlighted in gold.</div>
+
+  <div class="panel">
+    <div class="gridOuter">
+      <div class="gridScale">
+        <div id="grid" class="grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= CONFIG – must match puzzle page ========= */
+const GRID_ROWS = 17;
+const GRID_COLS = 17;
+
+const WORDS = [
+  "BRUSH","TEETH","COFFEE","SHOWER","ALARM","MIRROR","TOWEL","CEREAL",
+  "TOOTHPASTE","SNOOZE","DRESS","SUNLIGHT","MAKEUP","SMOOTHIE","WAKE"
+].map(w=>w.toUpperCase());
+
+/* Same deterministic RNG seed & algorithm as puzzle */
+let seed = 195751;
+function rand(){
+  seed = (seed * 1103515245 + 12345) % 2147483648;
+  return seed / 2147483648;
+}
+function choice(arr){ return arr[Math.floor(rand()*arr.length)]; }
+
+const DIRS = [
+  {dr:1,dc:0},{dr:-1,dc:0},{dr:0,dc:1},{dr:0,dc:-1},
+  {dr:1,dc:1},{dr:-1,dc:-1},{dr:-1,dc:1},{dr:1,dc:-1}
+];
+
+let grid = Array.from({length:GRID_ROWS},()=>Array(GRID_COLS).fill(""));
+
+/* ========= REBUILD THE SAME PUZZLE GRID ========= */
+function inBounds(r,c){ return r>=0 && r<GRID_ROWS && c>=0 && c<GRID_COLS; }
+
+function canPlace(word,r,c,dr,dc){
+  for(let i=0;i<word.length;i++){
+    const rr=r+dr*i, cc=c+dc*i;
+    if(!inBounds(rr,cc)) return false;
+    const ch=grid[rr][cc];
+    if(ch!=="" && ch!==word[i]) return false;
+  }
+  return true;
+}
+
+function placeWord(word){
+  const len = word.length;
+  for(let t=0;t<2000;t++){
+    const {dr,dc}=choice(DIRS);
+    const minR = dr<0 ? len-1 : 0;
+    const maxR = dr>0 ? GRID_ROWS-len : GRID_ROWS-1;
+    const minC = dc<0 ? len-1 : 0;
+    const maxC = dc>0 ? GRID_COLS-len : GRID_COLS-1;
+
+    const r = Math.floor(rand()*(maxR-minR+1))+minR;
+    const c = Math.floor(rand()*(maxC-minC+1))+minC;
+
+    if(canPlace(word,r,c,dr,dc)){
+      for(let i=0;i<len;i++){
+        grid[r+dr*i][c+dc*i] = word[i];
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+function generatePuzzle(){
+  [...WORDS].sort((a,b)=>b.length-a.length).forEach(w=>placeWord(w));
+  const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for(let r=0;r<GRID_ROWS;r++){
+    for(let c=0;c<GRID_COLS;c++){
+      if(grid[r][c]===""){
+        grid[r][c] = ABC[Math.floor(rand()*26)];
+      }
+    }
+  }
+}
+
+/* ========= RENDER GRID ========= */
+const gridEl = document.getElementById("grid");
+gridEl.style.gridTemplateColumns = `repeat(${GRID_COLS}, var(--cell))`;
+let cellEls = [];
+
+function renderGrid(){
+  gridEl.innerHTML = "";
+  cellEls = [];
+  for(let r=0;r<GRID_ROWS;r++){
+    for(let c=0;c<GRID_COLS;c++){
+      const div = document.createElement("div");
+      div.className = "cell";
+      div.textContent = grid[r][c];
+      div.dataset.r = r;
+      div.dataset.c = c;
+      gridEl.appendChild(div);
+      cellEls.push(div);
+    }
+  }
+}
+
+/* ========= FIND & HIGHLIGHT ALL WORDS ========= */
+function highlightSolutions(){
+  const positions = new Set(); // "r,c" keys to highlight
+
+  function findWord(word){
+    const target = word;
+    const rev = word.split("").reverse().join("");
+    for(let r=0;r<GRID_ROWS;r++){
+      for(let c=0;c<GRID_COLS;c++){
+        for(const {dr,dc} of DIRS){
+          // forward
+          if(matchWordAt(target,r,c,dr,dc)){
+            for(let i=0;i<target.length;i++){
+              const rr=r+dr*i, cc=c+dc*i;
+              positions.add(rr+","+cc);
+            }
+          }
+          // reverse
+          if(matchWordAt(rev,r,c,dr,dc)){
+            for(let i=0;i<rev.length;i++){
+              const rr=r+dr*i, cc=c+dc*i;
+              positions.add(rr+","+cc);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function matchWordAt(word,r,c,dr,dc){
+    for(let i=0;i<word.length;i++){
+      const rr=r+dr*i, cc=c+dc*i;
+      if(!inBounds(rr,cc)) return false;
+      if(grid[rr][cc] !== word[i]) return false;
+    }
+    return true;
+  }
+
+  WORDS.forEach(findWord);
+
+  // Apply highlight class to all matching cells
+  cellEls.forEach(el=>{
+    const key = el.dataset.r + "," + el.dataset.c;
+    if(positions.has(key)){
+      el.classList.add("highlight");
+    }
+  });
+}
+
+/* ========= SCALE TO FIT (like puzzle) ========= */
+function scaleGridToFit(){
+  const outer = document.querySelector(".gridOuter");
+  const scaler = document.querySelector(".gridScale");
+  if(!outer || !scaler) return;
+
+  const outerRect = outer.getBoundingClientRect();
+  const gridRect  = gridEl.getBoundingClientRect();
+
+  const outerWidth = outerRect.width || window.innerWidth || 320;
+  const gridWidth  = gridRect.width || (GRID_COLS * 28);
+
+  let scale = outerWidth / gridWidth;
+  if(scale > 1) scale = 1;
+  if(scale <= 0 || !isFinite(scale)) scale = 1;
+
+  scaler.style.transform = `scale(${scale})`;
+}
+
+/* ========= BOOT ========= */
+generatePuzzle();
+renderGrid();
+highlightSolutions();
+
+setTimeout(scaleGridToFit, 50);
+window.addEventListener("resize", ()=>setTimeout(scaleGridToFit,50));
+window.addEventListener("orientationchange", ()=>setTimeout(scaleGridToFit,100));
+</script>
+</body>
+</html>
