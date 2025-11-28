@@ -190,3 +190,34 @@ header h2{
     padding:8px 6px;
   }
 }
+/* ========= SOLUTION PAGE FIX ========= */
+
+/* Prevent horizontal scroll on solution page */
+body {
+  overflow-x: hidden;
+}
+
+/* Ensure the solution grid always fits inside the viewport */
+.gridOuter {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Force scale container to respect width */
+.gridScale {
+  max-width: 100%;
+}
+
+/* Make sure the grid itself doesn't overflow viewport by 1px */
+.grid {
+  max-width: calc(100vw - 12px);
+  box-sizing: border-box;
+}
+
+/* Extra safety for very small screens */
+@media (max-width: 480px){
+  .grid {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
