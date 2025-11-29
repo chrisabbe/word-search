@@ -15,20 +15,21 @@
 <div id="toast" class="toast"></div>
 <script>
 /* ========= CONFIG ========= */
-const GRID_ROWS = 17;
-const GRID_COLS = 17;
+window.PUZZLE_CONFIG = {
+  title: "Daily Word Search",
+  subtitle: "Day 2",
 
-const WORDS = [
-  "SHEET","PILLOW","DREAM","SNORE","NIGHT",
-  "STARS","BLANKET","MOON","SLEEP","TIRED",
-  "YAWN","PAJAMAS","REST","LAMP","CLOCK"
-].map(w=>w.toUpperCase());
+  gridRows: 17,
+  gridCols: 17,
 
-const LS_KEY = "ws_day002";
-const CLEAR_COOKIE = "ws_clear_day002";
+  seed: 195752,
 
-/* ========= RNG ========= */
-let seed = 195752;
+  words: [
+    "SHEET","PILLOW","DREAM","SNORE","NIGHT",
+    "STARS","BLANKET","MOON","SLEEP","TIRED",
+    "YAWN","PAJAMAS","REST","LAMP","CLOCK"
+  ]
+};
 </script>
 <script src="../../engine/engine.js"></script>
 </body></html>
