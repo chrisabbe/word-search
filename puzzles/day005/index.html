@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Word Search</title>
+
+<link rel="stylesheet" href="../../engine/styles.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Daily Word Search</h1>
+</header>
+
+<div class="wrap">
+  <div class="subtitle">Drag across letters to highlight words. Progress saves automatically.</div>
+
+  <div class="panel layout">
+    <div class="gridOuter">
+      <div class="gridScale">
+        <div id="grid" class="grid"></div>
+      </div>
+    </div>
+
+    <div class="words">
+      <h3>Words to Find</h3>
+      <div id="wordList"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="clearBtn" class="btn">Clear My Answers</button>
+  </div>
+</div>
+
+<div id="toast" class="toast">Saved</div>
+
+<script>
+/* ========= CONFIG (ONLY EDIT THIS SECTION) ========= */
+window.PUZZLE_CONFIG = {
+  title: "Daily Word Search",
+  subtitle: "In the Kitchen",
+
+  gridRows: 17,
+  gridCols: 17,
+
+  seed: 195755,
+
+  words: [
+    “STOVE”,”SPOON”,”KNIFE”,”PAN”,”PLATE”,
+“BOWL”,”RECIPE”,”OVEN”,”MIX”,”TASTE”,
+“SALAD”,”TIMER”,”BAKE”,”HEAT”,”CLEAN”
+  ]
+};
+
+/* ========= DO NOT EDIT BELOW THIS LINE ========= */
+</script>
+
+<script src="../../engine/engine.js"></script>
+
+</body>
+</html>
