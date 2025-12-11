@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../engine/styles.css">
+<title>Daily Word Search</title>
+</head>
+
+<body>
+<header>
+  <h1>Daily Word Search</h1>
+  <h2>Test Puzzle</h2>
+</header>
+
+<div class="wrap">
+  <div class="subtitle">Drag to find all hidden words.</div>
+
+  <div class="panel layout">
+    <div class="gridOuter">
+      <div class="gridScale">
+        <div id="grid" class="grid"></div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Words</h3>
+      <div id="wordList"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="clearBtn" class="btn">Clear</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- CONFIG BLOCK — YOU EDIT ONLY THIS PART -->
+<script>
+window.PUZZLE_CONFIG = {
+  title: "Daily Word Search",
+  subtitle: "Test Puzzle",
+
+  gridRows: 17,
+  gridCols: 17,
+
+  seed: 999999,
+
+  words: ["TEST","GRID","HELLO","WORLD","PUZZLE"]
+};
+</script>
+
+<script src="../../engine/engine-test.js"></script>
+</body>
+</html>
