@@ -98,22 +98,16 @@
     background:#fff;
   }
 
-  .cell.highlight{
-    background:var(--gold-soft);
-    border-color:#b7a25a;
-  }
-  .cell.outline {
-  position: relative;
+  .cell.highlight {
+  background: var(--gold-soft);
+  border-color: #b7a25a;
+
+  /* NEW: soft glow */
+  box-shadow: 0 0 0 2px rgba(183,162,90,0.65),
+              0 0 8px rgba(183,162,90,0.45);
 }
 
-.cell.outline::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border: 2px solid #b7a25a;
-  border-radius: 8px;
-  pointer-events: none;
-}
+  }
 
 </style>
 </head>
@@ -276,7 +270,6 @@ function highlightSolutions(){
       );
       if(el){
         el.classList.add("highlight");
-        el.classList.add("outline");
       }
     });
   });
