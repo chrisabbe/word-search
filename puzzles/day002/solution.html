@@ -98,13 +98,18 @@
     background:#fff;
   }
 
-  .cell.highlight {
+  .cell.highlight{
   background: var(--gold-soft);
-  border-color: #b7a25a;
 
-  /* NEW: soft glow */
-  box-shadow: 0 0 0 2px rgba(183,162,90,0.65),
-              0 0 8px rgba(183,162,90,0.45);
+  /* REMOVE border so glow can breathe */
+  border-color: transparent;
+
+  /* STRONGER glow */
+  box-shadow:
+    0 0 0 3px rgba(183,162,90,0.85),
+    0 0 14px rgba(183,162,90,0.6);
+}
+
 }
 
   }
