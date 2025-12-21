@@ -268,6 +268,23 @@ document.getElementById("clearBtn").onclick=()=>{
   localStorage.removeItem(LS_KEY);
   location.reload();
 };
+/* ========= SCALE GRID TO FIT (MOBILE SAFE) ========= */
+function scaleGridToFit(){
+  const outer = document.querySelector(".gridOuter");
+  const scaler = document.querySelector(".gridScale");
+  const gridEl = document.getElementById("grid");
+  if(!outer || !scaler || !gridEl) return;
+
+  const outerWidth = outer.clientWidth || window.innerWidth || 320;
+  const naturalGridWidth = gridCols * 28; // matches --cell size
+
+  let scale = outerWidth / naturalGridWidth;
+  if (scale > 1) scale = 1;
+  if (scale <= 0 || !isFinite(scale)) scale = 1;
+
+  scaler.style.transform = `scale(${scale})`;
+  scaler.style.width = `${naturalGridWidth}px`; // ⭐ critical for mobile
+}
 
 /* ========= BOOT ========= */
 generatePuzzle();
@@ -275,3 +292,8 @@ renderGrid();
 restoreProgress();
 renderWordList();
 applyFound();
+
+setTimeout(scaleGridToFit, 50);
+window.addEventListener("resize", () => setTimeout(scaleGridToFit, 50));
+window.addEventListener("orientationchange", () => setTimeout(scaleGridToFit, 100));
+
