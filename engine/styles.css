@@ -1,18 +1,4 @@
-:root{
-  --teal:#008080;
-  --teal-dark:#006a6a;
-  --gold:#d8c178;
-  --gold-soft:#efe4b4;
-  --bg:#f5f6f7;
-  --panel:#ffffff;
-  --ink:#1e1e1e;
-  --muted:#6b6b6b;
-  --line:#b9b9b9;
 
-  /* Base cell size; portrait phones will bump this up via media query */
-  --cell:28px;
-  --gap:2px;
-}
 :root{
   --teal:#008080;
   --teal-dark:#006a6a;
