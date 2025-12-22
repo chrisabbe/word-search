@@ -13,6 +13,12 @@
   --cell:28px;
   --gap:2px;
 }
+html, body {
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 body{
   margin:0;
