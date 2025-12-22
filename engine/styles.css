@@ -11,7 +11,8 @@
   --line:#b9b9b9;
 
   /* Base cell size; portrait phones will bump this up via media query */
-  --cell:28px;
+  --cell: clamp(20px, 5.2vw, 32px);
+
   --gap:2px;
 }
 html, body {
