@@ -309,7 +309,7 @@ function resizeCellsToFit(){
   const borderTotalPerCell = borderEachSide * 2;
 
   // Safety padding to avoid rounding errors on mobile browsers
-  const safety = 8;
+  const safety = 14;
 
   // Solve for cell size so TOTAL grid width fits:
   // total = cols*(cell + borders) + (cols-1)*gap
