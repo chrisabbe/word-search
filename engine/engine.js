@@ -269,21 +269,27 @@ document.getElementById("clearBtn").onclick=()=>{
 };
 
 /* ========= RESPONSIVE CELL SCALING (FIX) ========= */
-function resizeCellsToFit(){
-  const outer=document.querySelector(".gridOuter");
-  if(!outer) return;
+function scaleGridToFit(){
+  const outer = document.querySelector(".gridOuter");
+  const scaler = document.querySelector(".gridScale");
+  const grid   = document.getElementById("grid");
 
-  const maxWidth=outer.clientWidth||window.innerWidth||320;
-  const gap=2; // must match CSS
-  const padding=4;
+  if (!outer || !scaler || !grid) return;
 
-  const size=Math.floor(
-    (maxWidth-(gridCols-1)*gap-padding)/gridCols
-  );
+  // Force layout calculation
+  const available = outer.clientWidth;
+  const actual = grid.scrollWidth;
 
-  const finalSize=Math.max(18,Math.min(size,34));
-  document.documentElement.style.setProperty("--cell",finalSize+"px");
+  if (!available || !actual) return;
+
+  let scale = available / actual;
+  if (scale > 1) scale = 1;
+  if (scale < 0.6) scale = 0.6; // safety floor
+
+  scaler.style.transform = `scale(${scale})`;
+  scaler.style.width = `${actual}px`;
 }
+
 
 /* ========= BOOT ========= */
 generatePuzzle();
