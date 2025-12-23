@@ -298,6 +298,14 @@ restoreProgress();
 renderWordList();
 applyFound();
 
-resizeCellsToFit();
-window.addEventListener("resize",resizeCellsToFit);
-window.addEventListener("orientationchange",resizeCellsToFit);
+setTimeout(scaleGridToFit, 100);
+setTimeout(scaleGridToFit, 400);
+
+window.addEventListener("resize", () => {
+  setTimeout(scaleGridToFit, 100);
+});
+
+window.addEventListener("orientationchange", () => {
+  setTimeout(scaleGridToFit, 300);
+});
+
