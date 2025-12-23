@@ -76,11 +76,14 @@ function renderGrid(){
   cellEls=[];
   for(let r=0;r<gridRows;r++){
     for(let c=0;c<gridCols;c++){
-      const d=document.createElement("div");
-      d.className="cell";
-      d.d.dataset.letter = grid[r][c];
-      d.dataset.r=r; d.dataset.c=c;
-      gridEl.appendChild(d);
+      const d = document.createElement("div");
+d.className = "cell";
+d.textContent = grid[r][c];        // REQUIRED for engine logic
+d.dataset.letter = grid[r][c];     // REQUIRED for Android-safe rendering
+d.dataset.r = r;
+d.dataset.c = c;
+gridEl.appendChild(d);
+
       cellEls.push(d);
     }
   }
