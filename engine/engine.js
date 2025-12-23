@@ -78,7 +78,7 @@ function renderGrid(){
     for(let c=0;c<gridCols;c++){
       const d=document.createElement("div");
       d.className="cell";
-      d.textContent=grid[r][c];
+      d.d.dataset.letter = grid[r][c];
       d.dataset.r=r; d.dataset.c=c;
       gridEl.appendChild(d);
       cellEls.push(d);
