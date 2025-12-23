@@ -103,6 +103,7 @@ header h2{
   font-weight:800;
   font-size:clamp(14px,3.2vw,22px);
   line-height:1;
+  color: transparent;
 }
 
 /* Letter centered inside square */
