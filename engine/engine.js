@@ -201,7 +201,11 @@ function restore(){
     (d.foundCells||[]).forEach(c=>foundCells.add(c));
   }catch{}
 }
-
+/* ========= CLEAR ========= */
+document.getElementById("clearBtn").onclick = ()=>{
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+};
 /* ========= BOOT ========= */
 generatePuzzle();
 renderGrid();
