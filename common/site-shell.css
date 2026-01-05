@@ -113,3 +113,20 @@ body{
     text-align:center;
   }
 }
+/* ==== Restore site header text (override engine styles) ==== */
+
+.site-header h1 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #1e1e1e !important;
+  margin: 0;
+}
+
+.site-header .tagline {
+  font-size: 14px !important;
+  color: #444 !important;
+}
+
+.site-header {
+  background: #ffffff;
+}
