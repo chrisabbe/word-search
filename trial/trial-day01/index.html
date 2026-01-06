@@ -58,7 +58,30 @@
 </div>
 
 <div id="toast" class="toast"></div>
+</div>
+</main>
 
+<!-- Shared footer injected here -->
+<div id="site-footer"></div>
+
+<script>
+async function loadPartial(containerId, url){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  try{
+    const res = await fetch(url);
+    el.innerHTML = await res.text();
+  }catch(e){
+    console.error("Failed to load partial:", url, e);
+  }
+}
+
+// NOTE: Word Search lives at /WordSearch/puzzles/day001/
+// so ../../common/* IS the correct path here
+loadPartial("site-header", "../../common/header.html");
+loadPartial("site-footer", "../../common/footer.html");
+
+<script>
 <script>
 /* ========= CONFIG ========= */
 window.PUZZLE_CONFIG = {
