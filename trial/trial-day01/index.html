@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- Shared site shell -->
+<link rel="stylesheet" href="../../common/site-shell.css">
+
+<!-- Word Search engine styles -->
+<link rel="stylesheet" href="../../engine/styles.css">
+
+<title>Inbox Puzzles — Daily Word Search</title>
+</head>
+
+<body>
+
+<!-- Shared header -->
+<div id="site-header"></div>
+
+<main class="page">
+  <div class="page-panel">
+
+    <header class="puzzle-header">
+      <h1>Daily Word Search</h1>
+      <h2 id="puzzleSubtitle"></h2>
+    </header>
+
+    <div class="wrap">
+      <div class="subtitle">
+        Tap or drag across letters to find all hidden words. Your progress is saved automatically.
+      </div>
+
+      <div class="panel layout">
+        <div class="gridOuter">
+          <div class="gridScale">
+            <div id="grid" class="grid"></div>
+          </div>
+        </div>
+
+        <div class="words">
+          <h3>Words</h3>
+          <div id="wordList"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="clearBtn" class="btn">Clear</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+  </div>
+</main>
+
+<!-- Shared footer -->
+<div id="site-footer"></div>
+
+<script>
+/* ===== LOAD SHARED HEADER + FOOTER ===== */
+async function loadPartial(id, url){
+  const el = document.getElementById(id);
+  if(!el) return;
+  try{
+    const res = await fetch(url);
+    el.innerHTML = await res.text();
+  }catch(e){}
+}
+
+loadPartial("site-header", "../../common/header.html");
+loadPartial("site-footer", "../../common/footer.html");
+
+/* ===== THIS MUST EXIST BEFORE engine.js RUNS ===== */
+window.PUZZLE_CONFIG = {
+  title: "Daily Word Search",
+  subtitle: "Welcome Puzzle",
+
+  gridRows: 17,
+  gridCols: 17,
+  seed: 180001,
+
+  words: [
+    "WELCOME","FUN","PLAY","START","TODAY",
+    "BRAIN","GAME","EASY","SMILE","RELAX"
+  ]
+};
+
+document.getElementById("puzzleSubtitle").textContent =
+  window.PUZZLE_CONFIG.subtitle;
+</script>
+
+<!-- Engine must load LAST -->
+<script src="../../engine/engine.js"></script>
+
+</body>
+</html>
