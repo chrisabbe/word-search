@@ -92,24 +92,26 @@ let cellEls = [],
 
 function renderGrid(){
   if (!gridEl) return;
+
   gridEl.innerHTML = "";
   cellEls = [];
-  for(let r=0;r<gridRows;r++){
-    for(let c=0;c<gridCols;c++){
+
+  for(let r=0; r<gridRows; r++){
+    for(let c=0; c<gridCols; c++){
       const d = document.createElement("div");
       d.className = "cell";
       d.dataset.r = r;
       d.dataset.c = c;
 
       const letter = grid[r][c];
-      d.textContent = letter;        // backup
-      d.dataset.letter = letter;     // used by CSS ::after
+      d.dataset.letter = letter;   // ✅ ONLY source of letter
 
       gridEl.appendChild(d);
       cellEls.push(d);
     }
   }
 }
+
 
 function renderWordList(){
   const box = document.getElementById("wordList");
