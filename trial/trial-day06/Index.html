@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inbox Puzzles — Daily Word Search</title>
+
+<link rel="stylesheet" href="../../engine/styles.css">
+<link rel="stylesheet" href="../../common/site-shell.css">
+</head>
+
+<body>
+
+<div id="site-header"></div>
+
+<main class="page">
+  <div class="page-panel">
+
+    <header class="puzzle-header">
+      <h1>Daily Word Search</h1>
+      <h2 id="puzzleTheme"></h2>
+      <div id="puzzleTagline" class="theme-tagline"></div>
+    </header>
+
+    <div class="wrap">
+      <div class="subtitle">
+        Find hidden word. Tap first and last letters, or drag finger across word to highlight. Your progress is saved automatically.
+
+      </div>
+
+      <div class="panel layout">
+        <div class="gridOuter">
+          <div id="grid" class="grid"></div>
+        </div>
+
+        <div>
+          <h3>Words</h3>
+          <div id="wordList"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="clearBtn" class="btn">Clear</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script>
+async function loadPartial(id, url){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const res = await fetch(url);
+  el.innerHTML = await res.text();
+}
+loadPartial("site-header","../../common/header.html");
+loadPartial("site-footer","../../common/footer.html");
+</script>
+<script> window.PUZZLE_CONFIG = { title: "Daily Word Search", subtitle: "Ocean Giants", gridRows: 17, gridCols: 17, seed: 180006, words: [ "BLUEWHALE","ORCA","MANATEE","NARWHAL","SPERMWHALE", "RAY","MANTA","HUMPBACK","WALRUS","SEALION", "DUGONG","SUNFISH","BASKINGSHARK","OCTOPUS","GIANTSQUID" ] }; document.getElementById("puzzleTheme").textContent = "Ocean Giants"; document.getElementById("puzzleTagline").textContent = "Life beneath deep blue waters"; </script> 
+</script>
+
+
+
+<script src="../../engine/engine.js"></script>
+
+</body>
+</html>
