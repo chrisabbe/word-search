@@ -89,36 +89,16 @@ loadPartial("site-footer", "../../common/footer.html");
 </script>
 
 <script>
-/* ========= SOLUTION CONFIG (EDIT PER PUZZLE) ========= */
+window.PUZZLE_CONFIG = {
+  mode: "solution",              // ⭐ required for solution behavior
 
-const SOLUTION_CONFIG = {
-  theme: "Famous Explorers",
-  tagline: "Across oceans, continents, and unknown worlds",
+  title: "Daily Word Search",
+  subtitle: "Famous Explorers",
 
   gridRows: 17,
   gridCols: 17,
 
-  /* EXACT solved grid, row by row */
-  grid: [
-    "MAGELLANXXXXXXX",
-    "XCOOKXXXXDRAXXX",
-    "XCOLUMBUSXXXXXX",
-    "XXVESPUCCIXXXXX",
-    "XSHACKLETONXXXX",
-    "XXXXPOLOXXXXXXX",
-    "XXLEWISXXXXCLAR",
-    "XXXXHUDSONXXXXX",
-    "XXXCABOTXXXXXXX",
-    "XXXXDRAKEXXXXXX",
-    "XXPIZARROXXXXXX",
-    "XXXXNANSENXXXXX",
-    "XXAMUNDSENXXXXX",
-    "XXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXX"
-  ],
-
+  seed: 180002,                  // ⭐ MUST match puzzle page
   words: [
     "MAGELLAN","COLUMBUS","VESPUCCI","SHACKLETON","ZENGHE",
     "COOK","LEWIS","CLARK","POLO","HUDSON",
@@ -126,36 +106,12 @@ const SOLUTION_CONFIG = {
   ]
 };
 
-/* ========= RENDER SOLUTION ========= */
+// Display theme + tagline (visual only)
+document.getElementById("puzzleTheme").textContent =
+  "Famous Explorers";
 
-document.getElementById("solutionTheme").textContent =
-  SOLUTION_CONFIG.theme;
-
-document.getElementById("solutionTagline").textContent =
-  SOLUTION_CONFIG.tagline;
-
-const gridEl = document.getElementById("solutionGrid");
-gridEl.style.gridTemplateColumns =
-  `repeat(${SOLUTION_CONFIG.gridCols}, 1fr)`;
-
-/* Build grid */
-SOLUTION_CONFIG.grid.forEach((row, r)=>{
-  [...row].forEach((ch, c)=>{
-    const cell = document.createElement("div");
-    cell.className = "cell solution";
-    cell.dataset.letter = ch;
-    gridEl.appendChild(cell);
-  });
-});
-
-/* Word list */
-const listEl = document.getElementById("solutionWordList");
-SOLUTION_CONFIG.words.forEach(w=>{
-  const d = document.createElement("div");
-  d.className = "word found";
-  d.textContent = w;
-  listEl.appendChild(d);
-});
+document.getElementById("puzzleTagline").textContent =
+  "Across oceans, continents, and unknown worlds";
 </script>
 
 </body>
