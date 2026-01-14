@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inbox Puzzles — Word Search Solution</title>
+
+<!-- Shared site shell -->
+<link rel="stylesheet" href="../../common/site-shell.css">
+
+<!-- Word Search styles -->
+<link rel="stylesheet" href="../../engine/styles.css">
+
+<style>
+/* ===== SOLUTION-ONLY STYLES ===== */
+
+.solution-note{
+  text-align:center;
+  font-size:14px;
+  font-style:italic;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+.cell.solution{
+  background:var(--gold-soft);
+  border-color:#b7a25a;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Shared header -->
+<div id="site-header"></div>
+
+<main class="page">
+  <div class="page-panel">
+
+    <!-- Puzzle title -->
+    <header class="puzzle-header">
+      <h1>Daily Word Search — Solution</h1>
+
+      <div class="theme-block">
+        <h2 id="solutionTheme"></h2>
+        <div id="solutionTagline" class="theme-tagline"></div>
+      </div>
+    </header>
+
+    <div class="wrap">
+
+      <div class="solution-note">
+        Completed grid showing all hidden words.
+      </div>
+
+      <div class="panel layout">
+
+        <div class="gridOuter">
+          <div class="gridScale">
+            <div id="solutionGrid" class="grid"></div>
+          </div>
+        </div>
+
+        <div>
+          <h3>Words</h3>
+          <div id="solutionWordList"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- Shared footer -->
+<div id="site-footer"></div>
+
+<script>
+async function loadPartial(id, url){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const res = await fetch(url);
+  el.innerHTML = await res.text();
+}
+
+loadPartial("site-header", "../../common/header.html");
+loadPartial("site-footer", "../../common/footer.html");
+</script>
+
+<script>
+/* ========= SOLUTION CONFIG (EDIT PER PUZZLE) ========= */
+
+const SOLUTION_CONFIG = {
+  theme: "Famous Explorers",
+  tagline: "Across oceans, continents, and unknown worlds",
+
+  gridRows: 17,
+  gridCols: 17,
+
+  /* EXACT solved grid, row by row */
+  grid: [
+    "MAGELLANXXXXXXX",
+    "XCOOKXXXXDRAXXX",
+    "XCOLUMBUSXXXXXX",
+    "XXVESPUCCIXXXXX",
+    "XSHACKLETONXXXX",
+    "XXXXPOLOXXXXXXX",
+    "XXLEWISXXXXCLAR",
+    "XXXXHUDSONXXXXX",
+    "XXXCABOTXXXXXXX",
+    "XXXXDRAKEXXXXXX",
+    "XXPIZARROXXXXXX",
+    "XXXXNANSENXXXXX",
+    "XXAMUNDSENXXXXX",
+    "XXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXX"
+  ],
+
+  words: [
+    "MAGELLAN","COLUMBUS","VESPUCCI","SHACKLETON","ZENGHE",
+    "COOK","LEWIS","CLARK","POLO","HUDSON",
+    "CABOT","DRAKE","PIZARRO","NANSEN","AMUNDSEN"
+  ]
+};
+
+/* ========= RENDER SOLUTION ========= */
+
+document.getElementById("solutionTheme").textContent =
+  SOLUTION_CONFIG.theme;
+
+document.getElementById("solutionTagline").textContent =
+  SOLUTION_CONFIG.tagline;
+
+const gridEl = document.getElementById("solutionGrid");
+gridEl.style.gridTemplateColumns =
+  `repeat(${SOLUTION_CONFIG.gridCols}, 1fr)`;
+
+/* Build grid */
+SOLUTION_CONFIG.grid.forEach((row, r)=>{
+  [...row].forEach((ch, c)=>{
+    const cell = document.createElement("div");
+    cell.className = "cell solution";
+    cell.dataset.letter = ch;
+    gridEl.appendChild(cell);
+  });
+});
+
+/* Word list */
+const listEl = document.getElementById("solutionWordList");
+SOLUTION_CONFIG.words.forEach(w=>{
+  const d = document.createElement("div");
+  d.className = "word found";
+  d.textContent = w;
+  listEl.appendChild(d);
+});
+</script>
+
+</body>
+</html>
