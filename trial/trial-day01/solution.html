@@ -133,20 +133,22 @@ loadPartial("site-footer", "../../common/footer.html");
 window.PUZZLE_CONFIG = {
   mode: "solution",             // ⭐ tells engine.js to auto-highlight and disable play
   title: "Daily Word Search - Solution",
-  subtitle: "Famous Explorers", // you can keep using subtitle if you want
+    subtitle: "Coffeehouse Culture",
   gridRows: 17,
   gridCols: 17,
-  seed: 180002,                 // IMPORTANT: must match the puzzle page seed
+  seed: 180001,
   words: [
-    "MAGELLAN","COLUMBUS","VESPUCCI","SHACKLETON","ZENGHE",
-    "COOK","LEWIS","CLARK","POLO","HUDSON",
-    "CABOT","DRAKE","PIZARRO","NANSEN","AMUNDSEN"
+    "LATTE","ESPRESSO","CAPPUCCINO","BARISTA","ROASTED",
+    "CREMA","STEAMER","MACCHIATO","MOCHA","CAFETIERE",
+    "BLEND","BISCUIT","SAUCER","AROMA","COUNTER"
   ]
 };
 
-// Theme + tagline display
-document.getElementById("puzzleTheme").textContent = window.PUZZLE_CONFIG.subtitle;
-document.getElementById("puzzleTagline").textContent = "Across oceans, continents, and unknown worlds";
+document.getElementById("puzzleTheme").textContent =
+  window.PUZZLE_CONFIG.subtitle;
+
+document.getElementById("puzzleTagline").textContent =
+  "A warm & cozy start to the week";
 </script>
 
 <script src="../../engine/engine.js"></script>
