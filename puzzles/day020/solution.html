@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inbox Puzzles — Word Search Solution</title>
+
+<!-- Shared site shell (yellow bg + site header/footer styles) -->
+<link rel="stylesheet" href="../../common/site-shell.css">
+
+<!-- Word Search engine styles -->
+<link rel="stylesheet" href="../../engine/styles.css">
+
+<style>
+/* Teal puzzle header bar inside the white panel */
+.puzzle-header{
+  background:var(--teal);
+  color:#fff;
+  padding:14px 10px;
+  text-align:center;
+  border-bottom:3px solid var(--teal-dark);
+  border-radius:12px;
+  margin-bottom:10px;
+}
+
+.puzzle-header h1{
+  margin:0;
+  font-size:22px;
+  letter-spacing:.4px;
+}
+
+.theme-block{
+  margin-top:6px;
+}
+
+.theme-block h2{
+  margin:0;
+  font-size:16px;
+  font-weight:800;
+}
+
+.theme-tagline{
+  margin-top:3px;
+  font-size:13px;
+  font-weight:600;
+  opacity:.95;
+}
+
+/* Slightly different label styling for solution */
+.solution-note{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  font-style:italic;
+  margin:8px 0 14px;
+}
+</style>
+  <style>
+/* Force site-shell background to win */
+html, body{
+  background: var(--bg) !important;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- Shared header injected here -->
+<div id="site-header"></div>
+
+<main class="page">
+  <div class="page-panel">
+
+    <header class="puzzle-header">
+      <h1>Daily Word Search — Solution</h1>
+
+      <div class="theme-block">
+        <h2 id="puzzleTheme"></h2>
+        <div id="puzzleTagline" class="theme-tagline"></div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="solution-note">
+        Completed grid with all hidden words highlighted.
+      </div>
+
+      <div class="panel layout">
+        <div class="gridOuter">
+          <div class="gridScale">
+            <div id="grid" class="grid"></div>
+          </div>
+        </div>
+
+        <div>
+          <h3>Words</h3>
+          <div id="wordList"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="clearBtn" class="btn">Clear</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+  </div>
+</main>
+
+<!-- Shared footer injected here -->
+<div id="site-footer"></div>
+
+<script>
+async function loadPartial(containerId, url){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  try{
+    const res = await fetch(url);
+    el.innerHTML = await res.text();
+  }catch(e){
+    console.error("Failed to load partial:", url, e);
+  }
+}
+
+loadPartial("site-header", "../../common/header.html");
+loadPartial("site-footer", "../../common/footer.html");
+</script>
+
+<script>
+/* ========= CONFIG (SOLUTION MODE) ========= */
+window.PUZZLE_CONFIG = {
+  mode: "solution",             // ⭐ tells engine.js to auto-highlight and disable play
+  title: "Daily Word Search - Solution",
+                        subtitle: "Innovation",
+  gridRows: 17,
+  gridCols: 17,
+  seed: 190020,
+  words: [
+    "PROTOTYPE","INVENTION","ENGINEERING",
+    "ITERATION","DESIGN","BREAKTHROUGH",
+    "MECHANISM","TECHNOLOGY","OPTIMIZATION",
+    "EFFICIENCY","CREATION","RESEARCH",
+    "SOLUTION","SYSTEM","CONCEPT"
+  ]
+};
+document.getElementById("puzzleTheme").textContent = "Innovation";
+document.getElementById("puzzleTagline").textContent =
+  "Ideas that change things";
+</script>
+
+
+
+<script src="../../engine/engine.js"></script>
+
+</body>
+</html>
