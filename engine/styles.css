@@ -193,9 +193,11 @@ header h2{
    =============================== */
 .day-label{
   text-align:center;
-  font-size:13px;
-  color:#666;
-  margin:8px 0 4px;
-  font-weight:700;
-  letter-spacing:.3px;
+  font-size:12px;
+  color:#ffffff;
+  margin:6px 0 2px;
+  font-weight:600;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  opacity:0.85;
 }
