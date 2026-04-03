@@ -188,3 +188,14 @@ header h2{
 .toast.show{
   opacity:1;
 }
+/* ===============================
+   Day Label (Trial / Day Number)
+   =============================== */
+.day-label{
+  text-align:center;
+  font-size:13px;
+  color:#666;
+  margin:8px 0 4px;
+  font-weight:700;
+  letter-spacing:.3px;
+}
