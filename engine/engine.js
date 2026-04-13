@@ -181,12 +181,13 @@ function lineCells(r1,c1,r2,c2){
 function previewTo(cell){
   clearPreview();
   if(!startCell || !cell) return;
+
   const r1 = +startCell.dataset.r, c1 = +startCell.dataset.c;
   const r2 = +cell.dataset.r,      c2 = +cell.dataset.c;
 
   lineCells(r1,c1,r2,c2).forEach(([r,c])=>{
     const el = gridEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
-    if(el && !el.classList.contains("prefound")){
+    if(el){
       el.classList.add("preview");
       previewCells.push(el);
     }
